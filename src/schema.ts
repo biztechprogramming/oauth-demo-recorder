@@ -27,7 +27,9 @@ export const ClickStep = StepBase.extend({
 
 export const FillStep = StepBase.extend({
   fill: z.string().describe('CSS selector of input'),
-  value: z.string(),
+  // Coerce: YAML parses 123456 as a number, so unquoted PINs/passwords would
+  // otherwise fail validation with an inscrutable error.
+  value: z.coerce.string(),
   sensitive: z.boolean().default(false).describe('If true, redact value in logs'),
 })
 

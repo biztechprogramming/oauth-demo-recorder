@@ -43,7 +43,12 @@ program
     const parsed = Flow.safeParse(parseYaml(flowSrc))
     if (!parsed.success) {
       console.error('Flow YAML failed validation:')
-      console.error(parsed.error.format())
+      // Flat path → message list. Far more readable than .format()'s nested
+      // structure, especially when a step is rejected by all union variants.
+      for (const issue of parsed.error.issues) {
+        const path = issue.path.length ? issue.path.join('.') : '(root)'
+        console.error(`  ${path}: ${issue.message}`)
+      }
       process.exit(2)
     }
     const flow = parsed.data
