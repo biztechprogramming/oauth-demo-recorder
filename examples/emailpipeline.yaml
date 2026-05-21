@@ -70,12 +70,12 @@ steps:
     hold: 2s
 
   - fill: 'input[type="email"]'
-    value: REPLACE_WITH_TEST_EMAIL@example.com
+    value: example@gmail.com
     sensitive: false
     hold: 500ms
 
   - fill: 'input[type="password"]'
-    value: REPLACE_WITH_TEST_PASSWORD
+    value: 123456
     sensitive: true
     hold: 500ms
 
@@ -92,12 +92,31 @@ steps:
       reviewer can see exactly how the requested scopes flow through.
     hold: 3s
 
-  - click: 'button:has-text("Connect Gmail")'
+  - click: Add Account
+    by: text
+    narration: >
+      Clicking Add Account to begin connecting a new mailbox.
+    hold: 2s
+    label: "click Add Account"
+
+  - wait_for:
+      url: /accounts/new
+    hold: 500ms
+
+  - click: Gmail
+    by: text
+    narration: >
+      Selecting Gmail as the provider.
+    hold: 2s
+    label: "select Gmail provider"
+
+  - click: Connect with Gmail
     by: text
     narration: >
       Initiating the OAuth flow now. The next screen will be the Google
       consent screen showing the three scopes the application requests.
     hold: 2s
+    label: "trigger OAuth"
 
   - wait_for:
       url: accounts.google.com
