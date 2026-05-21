@@ -57,7 +57,25 @@ export async function runFlow(opts: RunnerOpts): Promise<RunResult> {
     const stepStart = Date.now() - start
     const label = stepLabel(step, i)
 
-    await executeStep(page, step, flow, i)
+    try {
+      await executeStep(page, step, flow, i)
+    } catch (err) {
+      // On any step failure, dump a screenshot + the current URL so the
+      // user can see what state the browser was actually in. Far more
+      // useful than re-running with --headed.
+      const failPath = join(outDir, `failure-step-${String(i + 1).padStart(2, '0')}.png`)
+      try {
+        await page.screenshot({ path: failPath, fullPage: true })
+        process.stderr.write(
+          `\nstep ${i + 1}/${flow.steps.length} (${label}) FAILED\n` +
+          `  current URL: ${page.url()}\n` +
+          `  screenshot:  ${failPath}\n\n`,
+        )
+      } catch {
+        /* page may have closed; ignore */
+      }
+      throw err
+    }
 
     // Hold on screen so the reviewer can absorb the result and narration plays out.
     const holdMs = parseDuration(step.hold)
