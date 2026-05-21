@@ -8,6 +8,16 @@ import { runFlow } from './runner.ts'
 import { encodeMixedMp4 } from './encode.ts'
 import { authenticate, uploadToYouTube } from './upload.ts'
 
+// Auto-load .env from the current working directory if present. Existing
+// process.env values win (so the shell can still override). Silently
+// ignored if .env doesn't exist.
+try {
+  // @ts-expect-error process.loadEnvFile is Node ≥ 20.6, not yet in @types/node universally
+  process.loadEnvFile?.()
+} catch {
+  /* no .env in cwd — that's fine, env vars may come from the shell */
+}
+
 const program = new Command()
 program
   .name('oauth-demo-record')
