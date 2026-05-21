@@ -1,0 +1,124 @@
+app:
+  name: EmailPipeline
+  base_url: https://email.fastlanedev.com
+
+video:
+  output: out/emailpipeline-oauth-demo.mp4
+  width: 1280
+  height: 720
+  fps: 30
+
+narration:
+  enabled: true
+  voice: onyx
+  model: tts-1-hd
+
+cursor:
+  enabled: true
+  size: 28
+  color: rgba(34,197,94,0.9)
+
+youtube:
+  upload: true
+  title: EmailPipeline — OAuth Scope Demo
+  description: |
+    Demonstration of restricted scope usage for Google OAuth verification.
+
+    Scopes requested:
+      - https://mail.google.com/                          (restricted)
+      - https://www.googleapis.com/auth/userinfo.email
+      - https://www.googleapis.com/auth/userinfo.profile
+
+    App: EmailPipeline — https://email.fastlanedev.com
+  visibility: unlisted
+  tags: [oauth, verification, emailpipeline]
+
+# IMPORTANT: replace the placeholders below with a real test account before
+# running. Use a throwaway Gmail you can grant the scopes to without risk.
+steps:
+  - goto: /
+    narration: >
+      This is the EmailPipeline marketing homepage. The application name
+      is EmailPipeline, and you can see the privacy policy and terms of
+      service links in both the header navigation and the footer. The
+      homepage is served as static server-side HTML — no login is
+      required to view it.
+    hold: 3s
+    label: "homepage / public marketing"
+
+  - highlight: 'a[href="/legal/privacy-policy"]'
+    color: '#22c55e'
+    narration: >
+      Here is the privacy policy link, available without authentication.
+    hold: 2s
+
+  - goto: /legal/privacy-policy
+    narration: >
+      The privacy policy is served at a distinct URL, with its own
+      content, separate from the homepage.
+    hold: 4s
+
+  - goto: /legal/terms-of-service
+    narration: >
+      The terms of service are also at a separate public route.
+    hold: 4s
+
+  - goto: /login
+    narration: >
+      Now I will sign in to the application with a test account so I can
+      demonstrate how the restricted Gmail scope is actually used.
+    hold: 2s
+
+  - fill: 'input[type="email"]'
+    value: REPLACE_WITH_TEST_EMAIL@example.com
+    sensitive: false
+    hold: 500ms
+
+  - fill: 'input[type="password"]'
+    value: REPLACE_WITH_TEST_PASSWORD
+    sensitive: true
+    hold: 500ms
+
+  - click: 'button[type="submit"]'
+    narration: >
+      Signing in now.
+    hold: 3s
+    label: "submit login"
+
+  - goto: /accounts
+    narration: >
+      Here is the Accounts page where the user manages connected email
+      mailboxes. I will now connect a Gmail account via OAuth so the
+      reviewer can see exactly how the requested scopes flow through.
+    hold: 3s
+
+  - click: 'button:has-text("Connect Gmail")'
+    by: text
+    narration: >
+      Initiating the OAuth flow now. The next screen will be the Google
+      consent screen showing the three scopes the application requests.
+    hold: 2s
+
+  - wait_for:
+      url: accounts.google.com
+    narration: >
+      This is the Google consent screen. The application name is
+      EmailPipeline. The scopes shown are: full Gmail access via
+      https://mail.google.com slash — required because we authenticate
+      to Gmail via IMAP and SMTP, which only accept this scope —
+      plus userinfo email and userinfo profile, which we use to display
+      the connected user's address and name in the application.
+    hold: 6s
+    label: "google consent screen"
+
+  # NOTE: The remaining steps after consent depend on the test account being
+  # set up. Expand them with click steps that:
+  #   1. Click "Continue" through the consent screen
+  #   2. Wait for redirect back to email.fastlanedev.com
+  #   3. Send an email from gmail.com in another tab; show it appearing in
+  #      EmailPipeline's inbox (proves IMAP IDLE read access)
+  #   4. Mark a message read in EmailPipeline; show the state propagate to
+  #      Gmail (proves modify access)
+  #   5. Click Reply, send; show the message in Gmail Sent (proves send)
+  #   6. Click the avatar menu; show email + display name (proves
+  #      userinfo.email and userinfo.profile in use)

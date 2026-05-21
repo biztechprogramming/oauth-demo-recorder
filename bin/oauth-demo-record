@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Wrapper so `oauth-demo-record path/to/flow.yaml` works from anywhere.
+# Uses Node's experimental TS strip so we don't need a build step.
+set -e
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+exec node --experimental-strip-types --no-warnings "$SCRIPT_DIR/../src/cli.ts" "$@"

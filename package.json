@@ -1,0 +1,29 @@
+{
+  "name": "oauth-demo-recorder",
+  "version": "0.1.0",
+  "description": "Records Google OAuth verification demo videos by driving a browser through a YAML-defined flow with TTS narration, an animated cursor, and YouTube upload.",
+  "type": "module",
+  "bin": {
+    "oauth-demo-record": "./bin/oauth-demo-record"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node --experimental-strip-types src/cli.ts",
+    "auth": "node --experimental-strip-types src/cli.ts auth"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.50.0",
+    "commander": "^12.1.0",
+    "googleapis": "^144.0.0",
+    "playwright": "^1.50.0",
+    "yaml": "^2.6.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
