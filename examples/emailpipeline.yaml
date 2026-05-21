@@ -111,7 +111,7 @@ steps:
     label: "select Gmail provider"
 
   - click: Connect with Gmail
-    by: text
+    by: role
     narration: >
       Initiating the OAuth flow now. The next screen will be the Google
       consent screen showing the three scopes the application requests.
